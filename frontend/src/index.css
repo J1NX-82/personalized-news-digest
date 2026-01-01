@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: #f4f6fb;
+  color: #111827;
+}
+
+main {
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.05),
+    transparent 120px
+  );
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
