@@ -10,7 +10,18 @@ const Digest = () => {
 
   useEffect(() => {
     api.get("/digest/preview")
-      .then((res) => setDigest(res.data))
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setDigest(res.data);
+        } else {
+          setDigest([]); // fallback to empty array
+          console.error("Unexpected digest response:", res.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Digest fetch failed:", err);
+        setDigest([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
