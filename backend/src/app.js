@@ -7,7 +7,10 @@ import emailRoutes from "./routes/emailRoutes.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://personalized-news-digest-rahul-goalas-projects.vercel.app/",
+  credentials: true
+}));
 app.use(express.json());
 app.use("/api/news", newsRoutes);
 app.use("/api/digest", digestRoutes);
