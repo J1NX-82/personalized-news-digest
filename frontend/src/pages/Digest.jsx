@@ -88,9 +88,9 @@ const Digest = () => {
             gap: "28px",
           }}
         >
-          {digest.map((item) => (
-            <DigestCard key={item.url} item={item} />
-          ))}
+      {Array.isArray(digest) && digest.map((item) => (
+        <DigestCard key={item.url} item={item} />
+      ))}
         </div>
       )}
     </>
