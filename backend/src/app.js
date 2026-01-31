@@ -13,11 +13,17 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  // Allow local development origin plus the deployed app origin
-  origin: ["http://localhost:3000", "https://personalized-news-digest-rahul-goalas-projects.vercel.app"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://personalized-news-digest-seven.vercel.app/"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use("/api/news", newsRoutes);
 app.use("/api/digest", digestRoutes);
