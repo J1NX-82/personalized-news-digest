@@ -16,7 +16,7 @@ const INTERESTS = [
 const Onboarding = ({ onSaved }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [keywords, setKeywords] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [setLoading] = useState(true);
 
   const normalizeInterest = (s) =>
     typeof s === "string" && s.length > 0
