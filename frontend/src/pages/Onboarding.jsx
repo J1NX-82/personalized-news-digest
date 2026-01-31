@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InterestChip from "../components/InterestChip";
 import api from "../services/api";
 
@@ -16,16 +16,16 @@ const INTERESTS = [
 const Onboarding = ({ onSaved }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [keywords, setKeywords] = useState("");
-  const [setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const normalizeInterest = (s) =>
     typeof s === "string" && s.length > 0
       ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
       : s;
 
-  React.useEffect(() => {
-    // Fetch existing profile and pre-fill the form if available
-    api.get("/users/profile")
+  useEffect(() => {
+    api
+      .get("/users/profile")
       .then((res) => {
         const data = res.data || {};
         const interests = Array.isArray(data.interests)
@@ -35,12 +35,11 @@ const Onboarding = ({ onSaved }) => {
         setKeywords(Array.isArray(data.keywords) ? data.keywords.join(", ") : "");
       })
       .catch(() => {
-        // if no profile exists or request fails, start with empty selections
         setSelectedInterests([]);
         setKeywords("");
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, []); // ✅ ESLint OK
 
   const toggleInterest = (interest) => {
     setSelectedInterests((prev) =>
@@ -52,6 +51,8 @@ const Onboarding = ({ onSaved }) => {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
+
       const response = await api.post("/users/profile", {
         interests: selectedInterests,
         keywords: keywords
@@ -61,7 +62,11 @@ const Onboarding = ({ onSaved }) => {
       });
 
       const saved = response.data || {};
-      setSelectedInterests(Array.isArray(saved.interests) ? saved.interests.map(normalizeInterest) : selectedInterests);
+      setSelectedInterests(
+        Array.isArray(saved.interests)
+          ? saved.interests.map(normalizeInterest)
+          : selectedInterests
+      );
       setKeywords(Array.isArray(saved.keywords) ? saved.keywords.join(", ") : keywords);
 
       alert("Preferences saved successfully!");
@@ -69,6 +74,8 @@ const Onboarding = ({ onSaved }) => {
       if (onSaved) onSaved();
     } catch (error) {
       alert("Failed to save preferences");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,9 +91,7 @@ const Onboarding = ({ onSaved }) => {
       }}
     >
       <h2>Choose your interests</h2>
-      <p style={{ color: "#6b7280" }}>
-        We’ll personalize your daily news digest.
-      </p>
+      <p style={{ color: "#6b7280" }}>We’ll personalize your daily news digest.</p>
 
       <div style={{ marginTop: "20px" }}>
         {INTERESTS.map((interest) => (
@@ -118,19 +123,20 @@ const Onboarding = ({ onSaved }) => {
 
       <button
         onClick={handleSubmit}
+        disabled={loading}
         style={{
           marginTop: "28px",
           padding: "12px",
           width: "100%",
-          backgroundColor: "#4f46e5",
+          backgroundColor: loading ? "#9ca3af" : "#4f46e5",
           color: "#fff",
           border: "none",
           borderRadius: "10px",
           fontWeight: 600,
-          cursor: "pointer",
+          cursor: loading ? "not-allowed" : "pointer",
         }}
       >
-        Save Preferences
+        {loading ? "Saving..." : "Save Preferences"}
       </button>
     </div>
   );
