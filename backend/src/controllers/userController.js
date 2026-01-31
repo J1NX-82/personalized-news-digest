@@ -21,3 +21,17 @@ export const saveUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: "demo@news.ai" });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};

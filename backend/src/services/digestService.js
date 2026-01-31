@@ -7,7 +7,7 @@ import { sendDigestEmail } from "./emailService.js";
 /**
  * Generate personalized summaries (no DB write)
  */
-export const generatePersonalizedDigest = async () => {
+export const generatePersonalizedDigest = async (limit = 8) => {
   const user = await User.findOne({ email: "demo@news.ai" });
 
   if (!user) {
@@ -21,12 +21,12 @@ let articles = await Article.find({
   ],
 })
   .sort({ publishedAt: -1 })
-  .limit(5);
+  .limit(limit);
 
 if (articles.length === 0) {
   articles = await Article.find({})
     .sort({ publishedAt: -1 })
-    .limit(5);
+    .limit(limit);
 }
 
 const summaries = [];
@@ -43,6 +43,7 @@ const summaries = [];
       summary,
       source: article.source,
       url: article.url,
+      category: article.category || null,
     });
   }
 

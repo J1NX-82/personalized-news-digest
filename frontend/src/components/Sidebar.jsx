@@ -1,54 +1,42 @@
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
-  const baseStyle = {
-    padding: "12px 16px",
-    borderRadius: "12px",
-    fontWeight: 600,
-    color: "#fff",
-  };
-
   return (
-    <div
-      style={{
-        width: "260px",
-        background:
-          "linear-gradient(180deg, #4338ca 0%, #6366f1 60%, #818cf8 100%)",
-        padding: "28px 20px",
-        minHeight: "100vh",
-      }}
-    >
-      <h2 style={{ marginBottom: "48px", fontWeight: 800 }}>
-        News<span style={{ color: "#e0e7ff" }}>AI</span>
-      </h2>
+    <aside className="sidebar" aria-label="Primary sidebar">
+      <div className="logo" role="banner">
+        <div className="logo-badge">NA</div>
+        <div>
+          <div className="brand-name">
+            News<span className="brand-highlight">AI</span>
+          </div>
+          <div className="brand-sub">Personalized insights</div>
+        </div>
+      </div>
 
-      <nav style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+      <nav className="sidebar-nav" role="navigation" aria-label="Main navigation">
         <NavLink
           to="/"
           end
-          style={({ isActive }) => ({
-            ...baseStyle,
-            background: isActive
-              ? "rgba(255,255,255,0.3)"
-              : "rgba(255,255,255,0.12)",
-          })}
+          title="Today’s Digest"
+          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
         >
-          📌 Today’s Digest
+          <span className="nav-icon" aria-hidden>📌</span>
+          <span className="nav-label">Today’s Digest</span>
         </NavLink>
 
         <NavLink
           to="/preferences"
-          style={({ isActive }) => ({
-            ...baseStyle,
-            background: isActive
-              ? "rgba(255,255,255,0.3)"
-              : "rgba(255,255,255,0.12)",
-          })}
+          title="Preferences"
+          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
         >
-          ⚙️ Preferences
+          <span className="nav-icon" aria-hidden>⚙️</span>
+          <span className="nav-label">Preferences</span>
         </NavLink>
       </nav>
-    </div>
+      <div className="sidebar-footer">
+        <small className="muted">Version 1.0 • Built for you</small>
+      </div>
+    </aside>
   );
 };
 

@@ -8,8 +8,13 @@ const Digest = () => {
   const [digest, setDigest] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const DIGEST_LIMIT = 8;
+
+  const categories = Array.from(new Set(digest.map((d) => d.category).filter(Boolean)));
+  const categoriesCount = categories.length;
+
   useEffect(() => {
-    api.get("/digest/preview")
+    api.get(`/digest/preview?limit=${DIGEST_LIMIT}`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setDigest(res.data);
@@ -25,14 +30,16 @@ const Digest = () => {
       .finally(() => setLoading(false));
   }, []);
 
+// ... later refresh button handler updated below
   return (
     <>
       <TopBar />
 <button
   onClick={() => {
     setLoading(true);
-    api.get("/digest/preview")
+    api.get(`/digest/preview?limit=${DIGEST_LIMIT}`)
       .then((res) => setDigest(res.data))
+      .catch((err) => console.error("Refresh failed:", err))
       .finally(() => setLoading(false));
   }}
   style={{
@@ -64,7 +71,7 @@ const Digest = () => {
   />
   <StatsCard
     label="Categories"
-    value="Technology"
+    value={categoriesCount}
     variant="amber"
   />
   <StatsCard

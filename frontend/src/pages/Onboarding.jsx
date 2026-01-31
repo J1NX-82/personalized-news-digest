@@ -16,6 +16,31 @@ const INTERESTS = [
 const Onboarding = ({ onSaved }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [keywords, setKeywords] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const normalizeInterest = (s) =>
+    typeof s === "string" && s.length > 0
+      ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+      : s;
+
+  React.useEffect(() => {
+    // Fetch existing profile and pre-fill the form if available
+    api.get("/users/profile")
+      .then((res) => {
+        const data = res.data || {};
+        const interests = Array.isArray(data.interests)
+          ? data.interests.map(normalizeInterest)
+          : [];
+        setSelectedInterests(interests);
+        setKeywords(Array.isArray(data.keywords) ? data.keywords.join(", ") : "");
+      })
+      .catch(() => {
+        // if no profile exists or request fails, start with empty selections
+        setSelectedInterests([]);
+        setKeywords("");
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const toggleInterest = (interest) => {
     setSelectedInterests((prev) =>
@@ -27,13 +52,17 @@ const Onboarding = ({ onSaved }) => {
 
   const handleSubmit = async () => {
     try {
-      await api.post("/users/profile", {
+      const response = await api.post("/users/profile", {
         interests: selectedInterests,
         keywords: keywords
           .split(",")
           .map((k) => k.trim())
           .filter(Boolean),
       });
+
+      const saved = response.data || {};
+      setSelectedInterests(Array.isArray(saved.interests) ? saved.interests.map(normalizeInterest) : selectedInterests);
+      setKeywords(Array.isArray(saved.keywords) ? saved.keywords.join(", ") : keywords);
 
       alert("Preferences saved successfully!");
 

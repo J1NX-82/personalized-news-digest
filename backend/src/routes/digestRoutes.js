@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get("/preview", async (req, res) => {
   try {
-    const digest = await generatePersonalizedDigest();
+    const limit = Math.max(1, parseInt(req.query.limit, 10) || 8);
+    const digest = await generatePersonalizedDigest(limit);
     res.json(digest);
   } catch (error) {
     console.error("DIGEST ERROR:", error);

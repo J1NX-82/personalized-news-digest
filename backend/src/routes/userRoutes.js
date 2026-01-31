@@ -1,8 +1,9 @@
 import express from "express";
-import { saveUserProfile } from "../controllers/userController.js";
+import { saveUserProfile, getUserProfile } from "../controllers/userController.js";
 
 const router = express.Router();
 
 router.post("/profile", saveUserProfile);
+router.get("/profile", getUserProfile);
 
 export default router;

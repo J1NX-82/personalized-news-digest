@@ -7,8 +7,15 @@ import emailRoutes from "./routes/emailRoutes.js";
 
 const app = express();
 
+// Log incoming requests (method, url, origin) to help debug CORS / network issues
+app.use((req, res, next) => {
+  console.log(`Incoming ${req.method} ${req.url} Origin: ${req.headers.origin || "<none>"}`);
+  next();
+});
+
 app.use(cors({
-  origin: "https://personalized-news-digest-rahul-goalas-projects.vercel.app/",
+  // Allow local development origin plus the deployed app origin
+  origin: ["http://localhost:3000", "https://personalized-news-digest-rahul-goalas-projects.vercel.app"],
   credentials: true
 }));
 app.use(express.json());
